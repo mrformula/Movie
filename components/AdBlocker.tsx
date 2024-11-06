@@ -154,10 +154,15 @@ export default function AdBlocker({ enabled }: Props) {
                     return originalFetch.apply(this, args);
                 };
 
-                // Override XMLHttpRequest
-                window.XMLHttpRequest.prototype.open = function (...args) {
-                    const url = args[1]?.toString();
-                    if (url && (
+                // Override XMLHttpRequest with correct type definition
+                XMLHttpRequest.prototype.open = function (
+                    method: string,
+                    url: string | URL,
+                    async: boolean = true,
+                    username?: string | null,
+                    password?: string | null
+                ) {
+                    if (typeof url === 'string' && (
                         url.includes('ads') ||
                         url.includes('analytics') ||
                         url.includes('tracker') ||
@@ -166,7 +171,7 @@ export default function AdBlocker({ enabled }: Props) {
                     )) {
                         return;
                     }
-                    return originalXHR.apply(this, args);
+                    return originalXHR.apply(this, [method, url, async, username, password]);
                 };
             };
 
