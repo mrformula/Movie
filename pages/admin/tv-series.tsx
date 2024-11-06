@@ -40,6 +40,8 @@ interface TVSeries {
     autoSeasons: Season[];
     manualSeasons: Season[];
     viewMode: 'auto' | 'manual';
+    quality: string;
+    streamwishId: string;
 }
 
 const TVSeriesManagement: React.FC = () => {
