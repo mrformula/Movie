@@ -14,12 +14,7 @@ const movieSchema = new mongoose.Schema({
         enum: ['CAM', 'HDCAM', 'HD', 'WebRip', 'WebDL', 'HDTS'],
         default: 'HD'
     },
-    streamwishId: {
-        type: String,
-        default: function () {
-            return `${this.tmdbId}_${this.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-        }
-    },
+    streamwishId: String,
     embedCode: String,
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
@@ -28,7 +23,7 @@ const movieSchema = new mongoose.Schema({
 // Add pre-save middleware to generate streamwishId
 movieSchema.pre('save', function (next) {
     if (!this.streamwishId) {
-        this.streamwishId = `${this.tmdbId}_${this.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+        this.streamwishId = `${this.get('tmdbId')}_${this.get('title').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
     }
     next();
 });

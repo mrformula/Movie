@@ -37,36 +37,12 @@ const tvSeriesSchema = new mongoose.Schema({
         enum: ['CAM', 'HDCAM', 'HD', 'WebRip', 'WebDL', 'HDTS'],
         default: 'HD'
     },
-    streamwishId: {
-        type: String,
-        default: function () {
-            return `${this.tmdbId}_${this.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-        }
-    },
+    streamwishId: String,
     inProduction: Boolean,
     lastAirDate: String,
     networks: [String],
-    autoSeasons: [{
-        seasonNumber: Number,
-        episodes: [{
-            episodeNumber: Number,
-            title: String,
-            overview: String,
-            airDate: String,
-            stillPath: String,
-            embedCode: String,
-            streamwishId: String
-        }]
-    }],
-    manualSeasons: [{
-        seasonNumber: Number,
-        episodes: [{
-            episodeNumber: Number,
-            title: String,
-            embedCode: String,
-            streamwishId: String
-        }]
-    }],
+    autoSeasons: [seasonSchema],
+    manualSeasons: [seasonSchema],
     viewMode: {
         type: String,
         enum: ['auto', 'manual'],
@@ -79,7 +55,7 @@ const tvSeriesSchema = new mongoose.Schema({
 // Add pre-save middleware to generate streamwishId
 tvSeriesSchema.pre('save', function (next) {
     if (!this.streamwishId) {
-        this.streamwishId = `${this.tmdbId}_${this.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+        this.streamwishId = `${this.get('tmdbId')}_${this.get('title').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
     }
     next();
 });
