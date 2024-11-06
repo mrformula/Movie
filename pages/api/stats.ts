@@ -21,6 +21,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Get MongoDB storage stats
         const db = mongoose.connection.db;
+        if (!db) {
+            throw new Error('Database connection not established');
+        }
+
         const stats = await db.stats();
 
         // Convert bytes to MB with 2 decimal places
